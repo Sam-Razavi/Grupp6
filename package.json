@@ -1,0 +1,27 @@
+{
+    "name": "grupp6",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "devStart": "start server.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Sam-Razavi/Grupp6.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Sam-Razavi/Grupp6/issues"
+    },
+    "homepage": "https://github.com/Sam-Razavi/Grupp6#readme",
+    "dependencies": {
+        "body-parser": "^1.20.2",
+        "dotenv": "^16.0.3",
+        "express": "^4.18.2",
+        "mongoose": "^7.1.1",
+        "nodemon": "^2.0.22"
+    }
+}
