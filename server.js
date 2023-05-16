@@ -22,7 +22,7 @@ mongoose
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-    res.json({ message: 'Server is running :D' });
+    res.send('The server is running!');
 });
 
 let PORT = 3000;
