@@ -12,10 +12,13 @@ mongoose
         useUnifiedTopology: true
     })
     .then(() => {
-        console.log('Successfully connected to the database');
+        console.log('Successfully connected to MongoDB');
+        app.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`);
+        });
     })
     .catch((err) => {
-        console.log('Could not connect to the database. Error...', err);
+        console.log('Could not connect to MongoDB. Error...', err);
         process.exit();
     });
 
@@ -27,6 +30,4 @@ app.get('/', (req, res) => {
 
 let PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-});
+
