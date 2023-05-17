@@ -51,6 +51,20 @@ app.post('/articles', async (req, res) => {
 // UPDATE A ARTICLE
 
 // DELETE A ARTICLE
+app.delete('/articles/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const article = await Article.findByIdAndDelete(id)
+        if (!article) {
+            return res
+                .status(404)
+                .json({ message: `cannot find any article with ID ${id}` })
+        }
+        res.status(200).json(article)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
 
 mongoose.set('strictQuery', false)
 mongoose
