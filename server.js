@@ -29,5 +29,3 @@ app.get('/', (req, res) => {
 });
 
 let PORT = 3000;
-
-
