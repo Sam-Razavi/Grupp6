@@ -15,9 +15,11 @@ app.get('/', (req, res) => {
     res.send('This is the Home side!');
 });
 
-// GET ALL ARTICLES
+app.get('/article', (req, res) => {
+    res.send('Article side!');
+});
+
 app.get('/articles', async (req, res) => {
-    res.send('This is the Articles side!');
     try {
         const articles = await Article.find({});
         res.status(200).json(articles);
@@ -26,7 +28,6 @@ app.get('/articles', async (req, res) => {
     }
 });
 
-// GET ARTICLE BY ID
 app.get('/articles/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -36,7 +37,7 @@ app.get('/articles/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-// CREATE A ARTICLE
+
 app.post('/articles', async (req, res) => {
     try {
         const article = await Article.create(req.body);
@@ -46,9 +47,10 @@ app.post('/articles', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-// UPDATE A ARTICLE
 
-// DELETE A ARTICLE
+// UPDATE
+
+// DELETE
 
 mongoose.set('strictQuery', false);
 mongoose

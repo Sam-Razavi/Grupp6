@@ -19,14 +19,7 @@ const articleSchema = mongoose.Schema(
         timestamps: true
     }
 );
-//  const authorsSchema = mongoose.Schema({})
-
-//  const commentsSchema = mongoose.Schema({})
 
 const Article = mongoose.model('Article', articleSchema);
-/* const Author = mongoose.model('Author', authorSchema);
-const Comment = mongoose.model('Comment', commentSchema); */
 
 module.exports = Article;
-/* module.exports = Author;
-module.exports = Comment; */
