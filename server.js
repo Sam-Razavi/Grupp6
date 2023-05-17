@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 const Article = require('./app/models/articleModel')
+const Author = require('./app/models/authorModel')
+const Comment = require('./app/models/commentModel')
 const app = express()
 
 app.use(express.json())
@@ -15,15 +17,18 @@ app.get('/', (req, res) => {
     res.send('This is the Home side!')
 })
 
+////////////////////////////////
+////Article
+///////////////////////////////
+
 app.get('/article', (req, res) => {
     res.send('Article side!')
 })
 
 app.get('/articles', async (req, res) => {
-    res.send('This is the Articles side!')
     try {
-        const articles = await Article.find({})
-        res.status(200).json(articles)
+        const article = await Article.find({})
+        res.status(200).json(article)
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -38,7 +43,7 @@ app.get('/articles/:id', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
-// CREATE A ARTICLE
+
 app.post('/articles', async (req, res) => {
     try {
         const article = await Article.create(req.body)
@@ -48,9 +53,10 @@ app.post('/articles', async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
-// UPDATE A ARTICLE
 
-// DELETE A ARTICLE
+// UPDATE
+
+// DELETE
 app.delete('/articles/:id', async (req, res) => {
     try {
         const { id } = req.params
@@ -61,6 +67,116 @@ app.delete('/articles/:id', async (req, res) => {
                 .json({ message: `cannot find any article with ID ${id}` })
         }
         res.status(200).json(article)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+////////////////////////////////
+////Author
+///////////////////////////////
+
+app.get('/author', (req, res) => {
+    res.send('Author side!')
+})
+
+app.get('/authors', async (req, res) => {
+    try {
+        const authors = await Author.find({})
+        res.status(200).json(authors)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+app.get('/authors/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const author = await Author.findById(id)
+        res.status(200).json(author)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+app.post('/authors', async (req, res) => {
+    try {
+        const author = await Author.create(req.body)
+        res.status(200).json(author)
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// UPDATE
+
+// DELETE
+app.delete('/authors/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const author = await Author.findByIdAndDelete(id)
+        if (!author) {
+            return res
+                .status(404)
+                .json({ message: `cannot find any author with ID ${id}` })
+        }
+        res.status(200).json(author)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+////////////////////////////////
+////Comments
+///////////////////////////////
+
+app.get('/comment', (req, res) => {
+    res.send('Comment side!')
+})
+
+app.get('/comments', async (req, res) => {
+    try {
+        const comments = await Comment.find({})
+        res.status(200).json(comments)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+app.get('/comments/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const comment = await Comment.findById(id)
+        res.status(200).json(comment)
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
+
+app.post('/comments', async (req, res) => {
+    try {
+        const comment = await Comment.create(req.body)
+        res.status(200).json(comment)
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: error.message })
+    }
+})
+
+// UPDATE
+
+// DELETE
+app.delete('/comments/:id', async (req, res) => {
+    try {
+        const { id } = req.params
+        const comment = await Comment.findByIdAndDelete(id)
+        if (!comment) {
+            return res
+                .status(404)
+                .json({ message: `cannot find any comment with ID ${id}` })
+        }
+        res.status(200).json(comment)
     } catch (error) {
         res.status(500).json({ message: error.message })
     }

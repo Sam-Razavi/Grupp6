@@ -1,10 +1,14 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const articleSchema = mongoose.Schema(
     {
         title: {
             type: String,
             required: [true, 'Enter a title name']
+        },
+        author: {
+            type: String,
+            required: [true, 'Enter a Author']
         },
         content: {
             type: String,
@@ -18,8 +22,8 @@ const articleSchema = mongoose.Schema(
     {
         timestamps: true
     }
-);
+)
 
-const Article = mongoose.model('Article', articleSchema);
+const Article = mongoose.model('Article', articleSchema)
 
-module.exports = Article;
+module.exports = Article
