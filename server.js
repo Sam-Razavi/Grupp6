@@ -5,6 +5,9 @@ const Article = require('./app/models/articleModel')
 const Author = require('./app/models/authorModel')
 const Comment = require('./app/models/commentModel')
 const app = express()
+const NodeCache = require("node-cache");
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -27,8 +30,16 @@ app.get('/article', (req, res) => {
 
 app.get('/articles', async (req, res) => {
     try {
-        const article = await Article.find({})
-        res.status(200).json(article)
+        const value = myCache.get("allArticles");
+        if (value == undefined) {
+            // key not found in cache, fetch data from DB and save it in cache
+            const articles = await Article.find({})
+            myCache.set("allArticles", articles);
+            res.status(200).json(articles);
+        } else {
+            // key found in cache, use that data
+            res.status(200).json(value);
+        }
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -82,8 +93,14 @@ app.get('/author', (req, res) => {
 
 app.get('/authors', async (req, res) => {
     try {
-        const authors = await Author.find({})
-        res.status(200).json(authors)
+        const value = myCache.get("allAuthors");
+        if (value == undefined) {
+            const authors = await Author.find({})
+            myCache.set("allAuthors", authors);
+            res.status(200).json(authors);
+        } else {
+            res.status(200).json(value);
+        }
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -137,8 +154,14 @@ app.get('/comment', (req, res) => {
 
 app.get('/comments', async (req, res) => {
     try {
-        const comments = await Comment.find({})
-        res.status(200).json(comments)
+        const value = myCache.get("allComments");
+        if (value == undefined) {
+            const comments = await Comment.find({})
+            myCache.set("allComments", comments);
+            res.status(200).json(comments);
+        } else {
+            res.status(200).json(value);
+        }
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
