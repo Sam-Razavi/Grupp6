@@ -59,6 +59,21 @@ app.post('/articles', async (req, res) => {
 
 // UPDATE
 
+app.put('/articles/:id', async(req, res) => {
+    try {
+        const {id} = req.params
+        const article = await Article.findByIdAndUpdate(id, req.body)
+        if(!article){
+            return res.status(404).json({message: `cannot find any article with ID ${id}`})
+        }
+        const updatedArticle = await Article.findById(id);
+        res.status(200).json(updatedArticle);
+
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
+
 // DELETE
 app.delete('/articles/:id', async (req, res) => {
     try {
@@ -113,6 +128,20 @@ app.post('/authors', async (req, res) => {
 })
 
 // UPDATE
+app.put('/authors/:id', async(req, res) => {
+    try {
+        const {id} = req.params
+        const author = await Author.findByIdAndUpdate(id, req.body)
+        if(!author){
+            return res.status(404).json({message: `cannot find any author with ID ${id}`})
+        }
+        const updatedAuthor = await Author.findById(id);
+        res.status(200).json(updatedAuthor);
+
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
 
 // DELETE
 app.delete('/authors/:id', async (req, res) => {
@@ -168,6 +197,20 @@ app.post('/comments', async (req, res) => {
 })
 
 // UPDATE
+app.put('/comments/:id', async(req, res) => {
+    try {
+        const {id} = req.params
+        const comment = await Comment.findByIdAndUpdate(id, req.body)
+        if(!comment){
+            return res.status(404).json({message: `cannot find any comment with ID ${id}`})
+        }
+        const updatedComment = await Comment.findById(id);
+        res.status(200).json(updatedComment);
+
+    } catch (error) {
+        res.status(500).json({message: error.message})
+    }
+})
 
 // DELETE
 app.delete('/comments/:id', async (req, res) => {
