@@ -90,6 +90,7 @@ app.delete('/articles/:id', async (req, res) => {
                 .status(404)
                 .json({ message: `cannot find any article with ID ${id}` })
         }
+        myCache.del("allArticles"); // invalidate cache for all articles
         res.status(200).json(article)
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -164,6 +165,7 @@ app.delete('/authors/:id', async (req, res) => {
                 .status(404)
                 .json({ message: `cannot find any author with ID ${id}` })
         }
+        myCache.del("allAuthors"); // invalidate cache for all authors
         res.status(200).json(author)
     } catch (error) {
         res.status(500).json({ message: error.message })
@@ -238,6 +240,7 @@ app.delete('/comments/:id', async (req, res) => {
                 .status(404)
                 .json({ message: `cannot find any comment with ID ${id}` })
         }
+        myCache.del("allComments"); // invalidate cache for all comments
         res.status(200).json(comment)
     } catch (error) {
         res.status(500).json({ message: error.message })
