@@ -4,8 +4,11 @@ const dotenv = require('dotenv')
 const Article = require('./app/models/articleModel')
 const Author = require('./app/models/authorModel')
 const Comment = require('./app/models/commentModel')
+const bodyParser = require('body-parser');
 const app = express()
 
+// Middleware to parse JSON bodies
+app.use(bodyParser.json());
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
