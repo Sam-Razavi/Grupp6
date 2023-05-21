@@ -66,6 +66,19 @@ app.post('/articles', async (req, res) => {
 })
 
 // UPDATE
+app.put('/articles/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const article = await Article.findByIdAndUpdate(id, req.body, { new: true }); // new: true returns the updated document
+        if (!article) {
+            return res.status(404).json({ message: `Cannot find any article with ID ${id}` });
+        }
+        res.status(200).json(article);
+        myCache.del("allArticles"); // invalidate cache for all articles
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 // DELETE
 app.delete('/articles/:id', async (req, res) => {
@@ -127,6 +140,19 @@ app.post('/authors', async (req, res) => {
 })
 
 // UPDATE
+app.put('/authors/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const author = await Author.findByIdAndUpdate(id, req.body, { new: true });
+        if (!author) {
+            return res.status(404).json({ message: `Cannot find any author with ID ${id}` });
+        }
+        res.status(200).json(author);
+        myCache.del("allAuthors"); // invalidate cache for all authors
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 // DELETE
 app.delete('/authors/:id', async (req, res) => {
@@ -188,6 +214,19 @@ app.post('/comments', async (req, res) => {
 })
 
 // UPDATE
+app.put('/comments/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const comment = await Comment.findByIdAndUpdate(id, req.body, { new: true });
+        if (!comment) {
+            return res.status(404).json({ message: `Cannot find any comment with ID ${id}` });
+        }
+        res.status(200).json(comment);
+        myCache.del("allComments"); // invalidate cache for all comments
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+})
 
 // DELETE
 app.delete('/comments/:id', async (req, res) => {
