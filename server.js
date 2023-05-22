@@ -81,19 +81,17 @@ app.put('/articles/:id', async (req, res) => {
 })
 
 // DELETE
-app.delete('/articles/:id', async (req, res) => {
+app.delete('/articles/delete', async (req, res) => {
     try {
-        const { id } = req.params
-        const article = await Article.findByIdAndDelete(id)
+        const { id } = req.body;
+        const article = await Article.findByIdAndDelete(id);
         if (!article) {
-            return res
-                .status(404)
-                .json({ message: `cannot find any article with ID ${id}` })
+            return res.status(404).json({ message: `Cannot find any article with ID ${id}` });
         }
+        res.status(200).json(article);
         myCache.del("allArticles"); // invalidate cache for all articles
-        res.status(200).json(article)
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
 })
 
