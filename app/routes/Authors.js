@@ -1,12 +1,21 @@
 const express = require('express')
 const router = express.Router()
 
+const NodeCache = require("node-cache");
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+
 const Author = require('../models/authorModel')
 
 router.get('/', async (req, res) => {
     try {
-        const authors = await Author.find({})
-        res.status(200).json(authors)
+        const value = myCache.get("allAuthors");
+        if (value == undefined) {
+            const authors = await Author.find({})
+            myCache.set("allAuthors", authors);
+            res.status(200).json(authors);
+        } else {
+            res.status(200).json(value);
+        }
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
@@ -35,34 +44,32 @@ router.post('/', async (req, res) => {
 // UPDATE
 router.put('/:id', async (req, res) => {
     try {
-        const { id } = req.params
-        const author = await Author.findByIdAndUpdate(id, req.body)
+        const { id } = req.params;
+        const author = await Author.findByIdAndUpdate(id, req.body, { new: true });
         if (!author) {
-            return res
-                .status(404)
-                .json({ message: `cannot find any author with ID ${id}` })
+            return res.status(404).json({ message: `Cannot find any author with ID ${id}` });
         }
-        const updatedAuthor = await Author.findById(id)
-        res.status(200).json(updatedAuthor)
+        res.status(200).json(author);
+        myCache.del("allAuthors"); // invalidate cache for all authors
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
 })
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/delete', async (req, res) => {
     try {
-        const { id } = req.params
-        const author = await Author.findByIdAndDelete(id)
+        const { id } = req.body;
+        const author = await Author.findByIdAndDelete(id);
         if (!author) {
-            return res
-                .status(404)
-                .json({ message: `cannot find any author with ID ${id}` })
+            return res.status(404).json({ message: `Cannot find any author with ID ${id}` });
         }
-        res.status(200).json(author)
+        res.status(200).json(author);
+        myCache.del("allAuthors"); // invalidate cache for all authors
     } catch (error) {
-        res.status(500).json({ message: error.message })
+        res.status(500).json({ message: error.message });
     }
 })
+
 
 module.exports = router
