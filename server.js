@@ -4,13 +4,6 @@ const dotenv = require('dotenv')
 
 const app = express()
 
-
-
-// ROUTES
-const articleRoute = require('./app/routes/Articles')
-const authorRoute = require('./app/routes/Authors')
-const commentRoute = require('./app/routes/Comments')
-
 // ROUTES
 const articleRoute = require('./app/routes/Articles')
 const authorRoute = require('./app/routes/Authors')
@@ -49,10 +42,4 @@ mongoose
         process.exit()
     })
 
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req, res) => {
-    res.send('The server is running!');
-});
-
-let PORT = 3000;
+const PORT = 3000
