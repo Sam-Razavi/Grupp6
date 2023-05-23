@@ -60,7 +60,6 @@ router.put('/:id', async (req, res) => {
 })
 
 // DELETE
-// DELETE
 router.delete('/delete', async (req, res) => {
     try {
         const { id } = req.body;
