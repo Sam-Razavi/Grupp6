@@ -6,6 +6,20 @@ const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });//Every entry i
 
 const Article = require('../models/articleModel')
 
+/////////////// CREATE ///////////////
+router.post('/', async (req, res) => {
+    try {
+        const article = await Article.create(req.body)
+        myCache.del("allArticles"); // Deleting the cache so that we dont have 2 sperate sets of data (old an new)
+        console.log('Deleted the cache'); // Confirming that the data in cache has been deleted
+        res.status(200).send(`POSTED the new article!`);
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ message: error.message })
+    }
+});
+
+/////////////// READ ALL ///////////////
 router.get('/', async (req, res) => {
     try {
         const value = myCache.get("allArticles");
@@ -21,8 +35,9 @@ router.get('/', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
-})
+});
 
+/////////////// READ ONE SPECIFIC ///////////////
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params
@@ -31,38 +46,27 @@ router.get('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message })
     }
-})
+});
 
-router.post('/', async (req, res) => {
+
+
+/////////////// UPDATE ///////////////
+router.put('/update', async (req, res) => {
     try {
-        const article = await Article.create(req.body)
-        myCache.del("allArticles"); // Deleting the cache so that we dont have 2 sperate sets of data (old an new)
-        console.log('Deleted the cache'); // Confirming that the data in cache has been deleted
-        res.status(200).json(article)
-    } catch (error) {
-        console.log(error.message)
-        res.status(500).json({ message: error.message })
-    }
-})
-
-// UPDATE
-
-router.put('/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const article = await Article.findByIdAndUpdate(id, req.body, { new: true }); // new: true returns the updated document
+        const { _id } = req.body;
+        const article = await Article.findByIdAndUpdate(_id, req.body, { new: true }); // new: true returns the updated document
         if (!article) {
-            return res.status(404).json({ message: `Cannot find any article with ID ${id}` });
+            return res.status(404).send(`Oops... 404. Cannot find any article with ID ${_id}`);
         }
-        res.status(200).json(article);
+        res.status(200).send(`UPDATED the article with ID ${_id}`);
         myCache.del("allArticles"); // invalidate cache for all articles
         console.log('Updated the cache due to update'); // shows that we have updated the cache as well as the database
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-})
+});
 
-// DELETE
+/////////////// DELETE ///////////////
 router.delete('/delete', async (req, res) => {
     try {
         const { id } = req.body;
