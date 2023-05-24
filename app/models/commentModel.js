@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const commentSchema = mongoose.Schema(
     {
         article_id: {
-            type: Number,
+            type: String,
             required: [true, 'Enter a article id']
         },
         author: {

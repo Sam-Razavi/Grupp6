@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('node-cache');
-const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });// shows that we have updated the cache as well as the database
 
 const Author = require('../models/authorModel');
 
@@ -10,6 +10,8 @@ const Author = require('../models/authorModel');
 router.post('/', async (req, res) => {
     try {
         const author = await Author.create(req.body);
+        myCache.del("allAuthors"); // Deleting the cache so that we dont have 2 sperate sets of data (old an new)
+        console.log('Deleted the cache due to posting a new article'); // Confirming that the data in cache has been deleted
         res.status(200).send(`POSTED the new author!`);
     } catch (error) {
         console.log(error.message);
@@ -22,8 +24,10 @@ router.get('/', async (req, res) => {
     try {
         const value = myCache.get('allAuthors');
         if (value == undefined) {
+            // key not found in cache, fetch data from DB and save it in cache
             const authors = await Author.find({});
-            myCache.set('allAuthors', authors);
+            myCache.set('allAuthors', authors);// adding articles to our cache
+            console.log("Fetched authors from database"); // Showing that the data is generated and retrieved from the database
             res.status(200).json(authors);
         } else {
             console.log("Served authors from cache"); // Shows that the data is coming from the cache that we created
@@ -55,6 +59,7 @@ router.put('/update', async (req, res) => {
         }
         res.status(200).send(`UPDATED the author with ID ${_id}`);
         myCache.del('allAuthors'); // invalidate cache for all authors
+        console.log('Deleted the cache due to update'); //shows that the cache has been deleted
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -70,6 +75,7 @@ router.delete('/delete', async (req, res) => {
         }
         res.status(200).send(`DELETED author with ID ${_id}`);
         myCache.del('allAuthors'); // invalidate cache for all authors
+        console.log('Deleted the cache'); // Deleting the cache so we dont have two seperate set of data
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

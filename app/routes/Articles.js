@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const NodeCache = require('node-cache');
-const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+const myCache = new NodeCache({ stdTTL: 100, checkperiod: 120 }); //Every entry in cache lives up to 100 seconds and the cache checks itself every 120 seconds
 
 const Article = require('../models/articleModel');
 
@@ -10,6 +10,8 @@ const Article = require('../models/articleModel');
 router.post('/', async (req, res) => {
     try {
         const article = await Article.create(req.body);
+        myCache.del("allArticles"); // Deleting the cache so that we dont have 2 sperate sets of data (old an new)
+        console.log('Deleted the cache due to posting a new article'); // Confirming that the data in cache has been deleted
         res.status(200).send(`POSTED the new article!`);
     } catch (error) {
         console.log(error.message);
@@ -24,7 +26,8 @@ router.get('/', async (req, res) => {
         if (value == undefined) {
             // key not found in cache, fetch data from DB and save it in cache
             const articles = await Article.find({});
-            myCache.set('allArticles', articles);
+            myCache.set('allArticles', articles);// adding articles to our cache
+            console.log("Fetched from database"); // Showing that the data is generated and retrieved from the database
             res.status(200).json(articles);
         } else {
             console.log("Served from cache"); // Shows that the data is coming from the cache that we created
@@ -56,6 +59,7 @@ router.put('/update', async (req, res) => {
         }
         res.status(200).send(`UPDATED the article with ID ${_id}`);
         myCache.del('allArticles'); // invalidate cache for all articles
+        console.log('Deleted the cache due to update'); // shows that we have updated the cache as well as the database
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

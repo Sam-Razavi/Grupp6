@@ -10,6 +10,8 @@ const Comment = require('../models/commentModel');
 router.post('/', async (req, res) => {
     try {
         const comment = await Comment.create(req.body);
+        myCache.del("allComments"); // Deleting the cache so that we dont have 2 sperate sets of data (old an new)
+        console.log('Deleted the cache due to posting a new comment'); // Confirming that the data in cache has been deleted
         res.status(200).send(`POSTED the new comment!`);
     } catch (error) {
         console.log(error.message);
@@ -22,6 +24,7 @@ router.get('/', async (req, res) => {
     try {
         const value = myCache.get('allComments');
         if (value == undefined) {
+            // key not found in cache, fetch data from DB and save it in cache
             const comments = await Comment.find({})
             myCache.set("allComments", comments); // adding articles to our cache
             console.log("Fetched comments from database"); // Showing that the data is generated and retrieved from the database
@@ -49,14 +52,14 @@ router.get('/:id', async (req, res) => {
 /////////////// UPDATE ///////////////
 router.put('/update', async (req, res) => {
     try {
-        const { _id } = req.params;
+        const { _id } = req.body;
         const comment = await Comment.findByIdAndUpdate(_id, req.body, { new: true });
         if (!comment) {
             return res.status(404).send(`Oops... 404. Cannot find any comment with ID ${_id}`);
         }
         res.status(200).send(`UPDATED the comment with ID ${_id}`);
         myCache.del('allComments'); // invalidate cache for all comments
-        console.log('Updated the cache due to update'); // shows that we have updated the cache as well as the database
+        console.log('Deleted the cache due to update'); // shows that we have updated the cache as well as the database
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
