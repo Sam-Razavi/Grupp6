@@ -64,12 +64,12 @@ router.put('/update', async (req, res) => {
 /////////////// DELETE ///////////////
 router.delete('/delete', async (req, res) => {
     try {
-        const { id } = req.body;
-        const article = await Article.findByIdAndDelete(id);
+        const { _id } = req.body;
+        const article = await Article.findByIdAndDelete(_id);
         if (!article) {
-            return res.status(404).send(`Oops... 404. Cannot find any article with ID ${id}`);
+            return res.status(404).send(`Oops... 404. Cannot find any article with ID ${_id}`);
         }
-        res.status(200).send(`DELETED article with ID ${id}`);
+        res.status(200).send(`DELETED article with ID ${_id}`);
         myCache.del('allArticles'); // invalidate cache for all articles
     } catch (error) {
         res.status(500).json({ message: error.message });
