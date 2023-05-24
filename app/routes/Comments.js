@@ -70,7 +70,7 @@ router.delete('/delete', async (req, res) => {
         if (!comment) {
             return res.status(404).send(`Oops... 404. Cannot find any comment with ID ${_id}`);
         }
-        res.status(200).send(`DELETED comment with ID ${id}`);
+        res.status(200).send(`DELETED comment with ID ${_id}`);
         myCache.del("allComments"); // invalidate cache for all comments
         console.log('Deleted the cache'); // Deleting the cache so we dont have two seperate set of data
     } catch (error) {
